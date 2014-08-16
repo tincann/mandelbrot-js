@@ -6,10 +6,21 @@
 	};
 
 	Mandelbrot.prototype.init = function() {
-		this.viewport = new Viewport({ width: 2, height: 2}, { x: 0, y: 0});
+		var size = 2.5;
+		this.viewport = new Viewport(
+			{ width: size, height: this.canvasDrawer.viewport.ratio }, { x: 0, y: 0});
 
 		this.coordinateMapper.setVirtualViewport(this.viewport);
 		this.coordinateMapper.setPixelViewport(this.canvasDrawer.viewport);
+	};
+
+	Mandelbrot.prototype.setLocation = function(location) {
+		this.viewport.setLocation(location);
+	};
+
+	Mandelbrot.prototype.setViewport = function(viewport) {
+		this.viewport = viewport;
+		this.coordinateMapper.setVirtualViewport(viewport);
 	};
 
 	Mandelbrot.prototype.draw = function() {
@@ -37,7 +48,7 @@
 			i++;
 		}
 		var color = i / max * 255;
-		return [color, color, color];
+		return [color, color, 7 * color % 255];
 	};
 
 	scope.Mandelbrot = Mandelbrot;

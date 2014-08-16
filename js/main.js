@@ -6,3 +6,5 @@
 	scope.Mandelbrot = mandelbrot;
 
 })(jQuery, window);
+
+Mandelbrot.draw();
