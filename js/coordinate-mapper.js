@@ -23,7 +23,7 @@
 	var Viewport = function(size, location){
 		this.width = size.width;
 		this.height = size.height;
-		this.ratio = size.width / size.height;
+		this.ratio = size.height / size.width;
 
 		if(location){
 			this.setLocation(location);

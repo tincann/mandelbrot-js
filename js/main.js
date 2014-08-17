@@ -7,4 +7,7 @@
 
 })(jQuery, window);
 
+var start = +new Date();
 Mandelbrot.draw();
+var duration = +new Date() - start;
+console.log(duration);
