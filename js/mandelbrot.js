@@ -1,7 +1,6 @@
 (function($, scope){
-	var Mandelbrot = function(drawer, coordinateMapper){
+	var Mandelbrot = function(drawer){
 		this.drawer = drawer;
-		this.coordinateMapper = coordinateMapper;
 		this.init();
 	};
 

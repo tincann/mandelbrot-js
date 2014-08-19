@@ -1,8 +1,9 @@
 (function($, scope){
-	var canvas = $('canvas').get(0);
-	var drawer = new WebGLDrawer2D(canvas);
-	var coordinateMapper = new CoordinateMapper();
-	var mandelbrot = new Mandelbrot(drawer, coordinateMapper);
+	var canvas = $('canvas');
+	canvas.attr('width', canvas.width());
+	canvas.attr('height', canvas.height());
+	var drawer = new WebGLDrawer2D(canvas.get(0));
+	var mandelbrot = new Mandelbrot(drawer);
 	scope.Mandelbrot = mandelbrot;
 
 })(jQuery, window);
