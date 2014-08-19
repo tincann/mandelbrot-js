@@ -8,7 +8,6 @@
 })(jQuery, window);
 
 var start = +new Date();
-var viewport = new Viewport({ width: 3.5, height: 3.5 * 0.68}, { x: 0, y: 0});
-Mandelbrot.draw(viewport);
+Mandelbrot.draw();
 var duration = +new Date() - start;
 console.log(duration);
