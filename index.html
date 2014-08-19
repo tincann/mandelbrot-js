@@ -1,16 +1,59 @@
 <html>
 <head>
+<style>
+	canvas {
+		position: absolute;
+	}
+</style>
+<script id="vShader" type="x-shader/x-vertex">// <![CDATA[
+  attribute vec2 a_position;
+  void main() {
+    gl_Position = vec4(a_position, 0, 1);
+  }
+// ]]></script>
 
+<script id="fShader" type="x-shader/x-fragment">// <![CDATA[
+
+precision highp float;
+
+uniform vec2 P_DIMENSION;
+uniform vec4 V_DIMENSION;
+
+vec4 calcy(float x, float y){    
+    float a = 0.0;
+    float b = 0.0;
+    int count = 0;
+    for(int i = 0; i < 1000; i++){
+        if(a * a + b * b >= 4.0){
+            break;
+        }
+        float c = a * a - b * b + x;
+        b = 2.0 * a * b + y;
+        a = c;
+        count = i;
+    }
+    float color = float(count) / 1000.0;
+    return vec4(color, color, color, 1.0);
+}
+
+void main(void) {
+	float x = (gl_FragCoord.x / P_DIMENSION.x) * V_DIMENSION[0] + V_DIMENSION[1];
+	float y = (gl_FragCoord.y / P_DIMENSION.y) * V_DIMENSION[2] + V_DIMENSION[3];
+	gl_FragColor = calcy(x, y);
+}
+// ]]></script>
 </head>
 
 <body>
-<canvas width="1250" height="850"></canvas>
+<canvas id="mandelbrot" width="1250" height="850"></canvas>
+<canvas id="overlay" width="1250" height="850"></canvas>
 
 <script type="text/javascript" src="js/jquery-2.1.1.min.js"></script>
 
 <!-- classes -->
 <script type="text/javascript" src="js/coordinate-mapper.js"></script>
 <script type="text/javascript" src="js/canvas-drawer.js"></script>
+<script type="text/javascript" src="js/webgl-drawer.js"></script>
 <script type="text/javascript" src="js/mandelbrot.js"></script>
 
 <!-- main -->

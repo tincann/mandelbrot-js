@@ -1,17 +1,17 @@
 (function($, scope){
-	var Mandelbrot = function(canvasDrawer, coordinateMapper){
-		this.canvasDrawer = canvasDrawer;
+	var Mandelbrot = function(drawer, coordinateMapper){
+		this.drawer = drawer;
 		this.coordinateMapper = coordinateMapper;
 		this.init();
 	};
 
 	Mandelbrot.prototype.init = function() {
-		var size = 2.5;
+		/*var size = 2.5;
 		this.viewport = new Viewport(
 			{ width: size, height: size * this.canvasDrawer.viewport.ratio }, { x: -0.5, y: 0});
 
 		this.coordinateMapper.setVirtualViewport(this.viewport);
-		this.coordinateMapper.setPixelViewport(this.canvasDrawer.viewport);
+		this.coordinateMapper.setPixelViewport(this.canvasDrawer.viewport);*/
 	};
 
 	Mandelbrot.prototype.setLocation = function(location) {
@@ -28,15 +28,17 @@
 		limit: 4
 	};
 
-	Mandelbrot.prototype.draw = function(options) {
-		options = $.extend(defaultOptions, options);
-		for(var y = 0, yLen = this.canvasDrawer.viewport.height; y < yLen; y++){
+	Mandelbrot.prototype.draw = function(viewport) {
+		this.drawer.draw(viewport);
+
+		/*options = $.extend(defaultOptions, options);
+		for(var y = 0, yLen = this.canvasDrawer.viewport.height; y < yLen; y++){	
 			for(var x = 0, xLen = this.canvasDrawer.viewport.width; x < xLen; x++){
 				var vCoord = this.coordinateMapper.toVirtualCoordinate(x, y);
 				var color = this.calculateColor(vCoord, options.limit, options.maxIterations);
 				this.canvasDrawer.draw(x, y, color);
-			}
-		}
+			}			
+		}*/
 	};
 
 	Mandelbrot.prototype.calculateColor = function(location, limit, maxIterations) {
