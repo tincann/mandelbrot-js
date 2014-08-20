@@ -53,7 +53,7 @@
 			this.gl.getUniformLocation(this.program, "V_DIMENSION"),
 				viewport.width, //width
 				viewport.xLeft, //x offset
-				viewport.width * viewport.ratio,
+				viewport.height,
 				viewport.yLeft
 			);
 

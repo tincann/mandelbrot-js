@@ -1,45 +1,61 @@
 (function($, scope){
-	var Mandelbrot = function(drawer){
+
+	var config = {
+		zoomSpeed: 1.1
+	};
+
+	var Mandelbrot = function(drawer, controls){
 		this.drawer = drawer;
+		this.controls = controls;
 		this.init();
+		this.initControls();
 	};
 
 	Mandelbrot.prototype.init = function() {
-		this.viewport = new Viewport({ width: 3.5, height: 3.5 * 0.68}, { x: 0, y: 0});
+		var ratio = this.drawer.canvas.height / this.drawer.canvas.width;
+		this.viewport = new Viewport({ width: 3.5, height: 3.5 * ratio }, { x: -0.5, y: 0});
 	};
 
-	Mandelbrot.prototype.setLocation = function(location) {
-		this.viewport.setLocation(location);
+	Mandelbrot.prototype.initControls = function() {
+		this.controls.on('onZoom', this.zoom.bind(this));
+		this.controls.on('onDrag', this.drag.bind(this));
+	};
+
+	Mandelbrot.prototype.zoom = function(location, direction) {
+		var oldWidth = this.viewport.width;
+
+		//zoom in
+		if(direction > 0){
+			this.setViewportSize({ width: oldWidth / config.zoomSpeed });
+		}
+		//zoom out
+		else{ 
+			this.setViewportSize({ width: oldWidth * config.zoomSpeed });
+		}
 		this.draw();
 	};
 
-	Mandelbrot.prototype.setViewport = function(viewport) {
-		this.viewport = viewport;
+	Mandelbrot.prototype.drag = function(location){
+		this.setViewportLocation(this.toVirtualCoordinates(location));
+		this.draw();
 	};
 
-	var defaultOptions = {
-		maxIterations: 500,
-		limit: 4
+	Mandelbrot.prototype.setViewportLocation = function(location) {
+		this.viewport.setLocation(location);
+	};
+
+	Mandelbrot.prototype.setViewportSize = function(size) {
+		this.viewport.setSize(size, true);
 	};
 
 	Mandelbrot.prototype.draw = function() {
+		console.log(this.viewport.xLeft, this.viewport.yLeft);
 		this.drawer.draw(this.viewport);
 	};
 
-	Mandelbrot.prototype.calculateColor = function(location, limit, maxIterations) {
-		var i = 0,
-			a = 0,
-			b = 0,
-			x = location.x,
-			y = location.y;
-
-		while( a*a + b*b < limit && i++ < maxIterations){
-			var c = a*a - b*b + x;
-			b = 2*a*b + y;
-			a = c;
-		}
-		var color = i / maxIterations * 255;
-		return [color, color, color];
+	Mandelbrot.prototype.toVirtualCoordinates = function(location) {
+		return { x : location.x / this.drawer.canvas.width  * this.viewport.width  + this.viewport.xLeft,
+				 y : location.y / this.drawer.canvas.height * this.viewport.height + this.viewport.yLeft };
 	};
 
 	scope.Mandelbrot = Mandelbrot;
