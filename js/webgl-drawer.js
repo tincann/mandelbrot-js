@@ -8,6 +8,16 @@
 		this.canvas = canvas;
 		this.init(canvas);
 		this.compileShaders(options.vShaderId, options.fShaderId);
+
+		//fps counter
+		setInterval(function(){
+			console.log(this.frameCount);
+			this.frameCount = 0;
+		}.bind(this), 1000);
+
+		this.fps = 50;
+		this.frameTime = 1 / this.fps * 1000;
+		this.frameCount = 0;
 	};
 
 	WebGLDrawer2D.prototype.init = function(canvas) {
@@ -39,6 +49,10 @@
 	};
 
 	WebGLDrawer2D.prototype.draw = function(viewport){
+		if(false && withinFrameLimit(this.lastDrawTime, this.frameTime)){
+			return;
+		}
+
 		this.gl.clearColor(1.0, 0.0, 0.0, 1.0);
 		this.gl.clear(this.gl.COLOR_BUFFER_BIT);
 		var loc = this.gl.getAttribLocation(this.program, "a_position");
@@ -48,7 +62,7 @@
 		this.gl.uniform2f(
 			this.gl.getUniformLocation(this.program, "P_DIMENSION"), 
 			this.canvas.width, this.canvas.height);
-
+		
 		this.gl.uniform4f(
 			this.gl.getUniformLocation(this.program, "V_DIMENSION"),
 				viewport.width, //width
@@ -59,6 +73,13 @@
 
 
 		this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+		
+		this.lastDrawTime = +new Date();
+		this.frameCount++;
+	};
+
+	var withinFrameLimit = function(lastDrawTime, frameTime){
+		return +new Date() - lastDrawTime < frameTime;
 	};
 
 	WebGLDrawer2D.prototype.compileShaders = function(vShaderId, fShaderId) {

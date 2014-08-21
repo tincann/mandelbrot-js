@@ -5,8 +5,8 @@
 	};
 
 	Viewport.prototype.setLocation = function(location) {
-		this.xLeft = location.x - this.width  / 2; //topleft point x
-		this.yLeft = location.y - this.height / 2; //topleft point y
+		this.xLeft = location.x - this.width  / 2; //bottomleft point x
+		this.yLeft = location.y - this.height / 2; //bottomleft point y
 		this.location = location;
 	};
 

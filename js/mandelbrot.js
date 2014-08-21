@@ -1,7 +1,8 @@
 (function($, scope){
 
 	var config = {
-		zoomSpeed: 1.1
+		zoomSpeed: 1.1,
+		moveSpeed: 50
 	};
 
 	var Mandelbrot = function(drawer, controls){
@@ -17,12 +18,17 @@
 	};
 
 	Mandelbrot.prototype.initControls = function() {
-		this.controls.on('onZoom', this.zoom.bind(this));
-		this.controls.on('onDrag', this.drag.bind(this));
+		this.controls.on('zoom', this.zoom.bind(this));
+		this.controls.on('drag', this.drag.bind(this));
+		this.controls.on('move', this.move.bind(this));
+		this.controls.on('click', this.click.bind(this));
 	};
 
 	Mandelbrot.prototype.zoom = function(location, direction) {
 		var oldWidth = this.viewport.width;
+		
+		//center to mouse location
+		this.setViewportLocation(this.toVirtualCoordinates(location));
 
 		//zoom in
 		if(direction > 0){
@@ -32,11 +38,42 @@
 		else{ 
 			this.setViewportSize({ width: oldWidth * config.zoomSpeed });
 		}
-		this.draw();
+
+		//translate back to old position (creates panzoom effect)
+		this.setViewportLocation(
+			this.toVirtualCoordinates(
+				{
+					x: this.drawer.canvas.width - location.x, 
+					y: this.drawer.canvas.height - location.y
+				}
+			)
+		);
+		this.draw();		
 	};
 
-	Mandelbrot.prototype.drag = function(location){
-		this.setViewportLocation(this.toVirtualCoordinates(location));
+	Mandelbrot.prototype.click = function(loc) {
+		console.log("screen pos:", loc);
+		var vloc = this.toVirtualCoordinates(loc);
+		console.log("virt   pos:", vloc);
+	};
+
+	Mandelbrot.prototype.drag = function(startpos, location){
+		
+		/*var invertedX = -this.drawer.canvas.width / 2 + location.x;
+		var invertedY = -this.drawer.canvas.height / 2 + location.y;
+		var a = { x: invertedX - startpos.x, y: invertedY - startpos.y };
+		
+		
+		this.setViewportLocation(this.toVirtualCoordinates(
+			));
+		this.draw();*/
+	};
+
+	Mandelbrot.prototype.move = function(direction) {
+		x = this.viewport.location.x + direction.x * config.moveSpeed / this.drawer.canvas.width  * this.viewport.width;
+		y = this.viewport.location.y + direction.y * config.moveSpeed / this.drawer.canvas.height * this.viewport.height;
+
+		this.setViewportLocation({ x: x, y: y });
 		this.draw();
 	};
 
@@ -49,13 +86,12 @@
 	};
 
 	Mandelbrot.prototype.draw = function() {
-		console.log(this.viewport.xLeft, this.viewport.yLeft);
 		this.drawer.draw(this.viewport);
 	};
 
 	Mandelbrot.prototype.toVirtualCoordinates = function(location) {
 		return { x : location.x / this.drawer.canvas.width  * this.viewport.width  + this.viewport.xLeft,
-				 y : location.y / this.drawer.canvas.height * this.viewport.height + this.viewport.yLeft };
+				 y : (1 - location.y / this.drawer.canvas.height) * this.viewport.height + this.viewport.yLeft };
 	};
 
 	scope.Mandelbrot = Mandelbrot;

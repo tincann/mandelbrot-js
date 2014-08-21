@@ -43,8 +43,9 @@ vec4 calcy(float x, float y){
 
 void main(void) {
 	float x = (gl_FragCoord.x / P_DIMENSION.x) * V_DIMENSION[0] + V_DIMENSION[1];
-	float y = (gl_FragCoord.y / P_DIMENSION.y) * V_DIMENSION[2] + V_DIMENSION[3];
-	gl_FragColor = calcy(x, y);
+	float y = ((gl_FragCoord.y / P_DIMENSION.y) * V_DIMENSION[2] + V_DIMENSION[3]);
+
+        gl_FragColor = calcy(x, y);
 }
 // ]]></script>
 </head>
